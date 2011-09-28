@@ -44,14 +44,18 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 					iframe
 						.unbind()
 						.load(function() {
-							var status = 503, statusText = 'ERROR', text;
+							var status, statusText, resp;
 							if(frameWin.name != id) {
-								text = frameWin.name;
+								resp = frameWin.name;
 								status = 200;
 								statusText = 'OK';
 							}
+							else {
+								status = 500;
+								statusText = 'INTERNAL ERROR';
+							}
 							iframe.remove();
-							completeCallback(status, statusText, { jsonw : $.parseJSON(text) });
+							completeCallback(status, statusText, { jsonw : $.parseJSON(resp) });
 						});
 
 					frameWin.location = 'about:blank';
@@ -74,9 +78,7 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 		},
 
 		abort : function() {
-			iframe && iframe
-				.unbind()
-				.attr('src', 'javascript:false');
+			iframe.remove();
 		}
 	}
 });
