@@ -38,27 +38,29 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 			iframe = $('<iframe name="' + id + '"/>')
 				.css('display', 'none')
 				.load(function() {
-					var frameWin = iframe[0].contentWindow ||
-							(iframe[0].contentDocument && iframe[0].contentDocument.window);
+					if(iframe) {
+						var frameWin = iframe[0].contentWindow ||
+								(iframe[0].contentDocument && iframe[0].contentDocument.window);
 
-					iframe
-						.unbind()
-						.load(function() {
-							var status, statusText, resp;
-							if(frameWin.name != id) {
-								resp = frameWin.name;
-								status = 200;
-								statusText = 'OK';
-							}
-							else {
-								status = 500;
-								statusText = 'INTERNAL ERROR';
-							}
-							iframe.remove();
-							completeCallback(status, statusText, { jsonw : $.parseJSON(resp) });
-						});
+						iframe
+							.unbind()
+							.load(function() {
+								var status, statusText, resp;
+								if(frameWin.name != id) {
+									resp = frameWin.name;
+									status = 200;
+									statusText = 'OK';
+								}
+								else {
+									status = 500;
+									statusText = 'INTERNAL ERROR';
+								}
+								iframe.remove();
+								completeCallback(status, statusText, { jsonw : $.parseJSON(resp) });
+							});
 
-					frameWin.location = 'about:blank';
+						frameWin.location = 'about:blank';
+					}
 				})
 				.appendTo('body');
 
