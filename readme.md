@@ -10,9 +10,12 @@ How use?
 		'http://your-upload-url/',
 		{
 			files   : $('input[type=file]),
+			success : function(data) {
+				// files loaded
+			},
 			// another usual ajax options
 		});
 
 On success response must put answer in window.name as json. Response's example:
-``<script type="text/javascript">window.name='{"status":"ok","size":1024}';</script>``
+	<script type="text/javascript">window.name='{"status":"ok","size":1024}';</script>
 
