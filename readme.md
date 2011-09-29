@@ -17,5 +17,6 @@ How use?
 		});
 
 On success response must put answer in window.name as json. Response's example:
+
 	<script type="text/javascript">window.name='{"status":"ok","size":1024}';</script>
 
