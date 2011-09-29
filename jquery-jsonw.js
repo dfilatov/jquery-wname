@@ -1,5 +1,6 @@
 /**
- * Crossdomain fileuploader plugin 1.0.1
+ * window.name-based transport for jQuery.Ajax with crossdomain file's uploading support
+ * @version 1.0.2
  * @requires jquery >= 1.5
  *
  * Copyright (c) 2011 Filatov Dmitry (dfilatov@yandex-team.ru)
@@ -68,7 +69,8 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 				form.append($('<input/>').attr({ type  : 'hidden', name  : name, value : val }));
 			});
 
-			opts.files && $.each(opts.files, function(_, file) {
+			opts.files && opts.files.each(function() {
+				var file = $(this);
 				form.append(file.replaceWith(file.clone(true, true)));
 			});
 
