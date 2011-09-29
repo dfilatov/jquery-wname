@@ -9,7 +9,7 @@ How use?
 	$.ajax(
 		'http://your-upload-url/',
 		{
-			files   : $('input[type=file]),
+			files   : $('input[type=file]'),
 			success : function(data) {
 				// files loaded
 			},
