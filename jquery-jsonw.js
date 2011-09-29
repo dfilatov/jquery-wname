@@ -38,7 +38,7 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 			iframe = $('<iframe name="' + id + '"/>')
 				.css('display', 'none')
 				.load(function() {
-					if(iframe) {
+					if(iframe) { // we need to check this, because Chrome throw 'load' twice: first go after creating iframe, second after content loaded
 						var frameWin = iframe[0].contentWindow ||
 								(iframe[0].contentDocument && iframe[0].contentDocument.window);
 
@@ -47,7 +47,7 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 							.load(function() {
 								var status, statusText, resp;
 								if(frameWin.name != id) {
-									resp = frameWin.name;
+									resp = $.parseJSON(frameWin.name);
 									status = 200;
 									statusText = 'OK';
 								}
@@ -56,7 +56,7 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 									statusText = 'INTERNAL ERROR';
 								}
 								iframe.remove();
-								completeCallback(status, statusText, { jsonw : $.parseJSON(resp) });
+								completeCallback(status, statusText, { jsonw : resp });
 							});
 
 						frameWin.location = 'about:blank';
