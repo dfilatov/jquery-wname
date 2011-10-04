@@ -1,4 +1,4 @@
-jQuery-jsonw plugin
+jQuery-wname plugin
 ===================
 What's this?
 ------------
@@ -9,8 +9,9 @@ How use?
 	$.ajax(
 		'http://your-upload-url/',
 		{
-			files   : $('input[type=file]'),
-			success : function(data) {
+			files    : $('input[type=file]'),
+			dataType : 'json',
+			success  : function(data) {
 				// files loaded
 			},
 			// another usual ajax options
