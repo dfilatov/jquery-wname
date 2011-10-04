@@ -62,7 +62,7 @@ $.ajaxTransport('wname', function(opts, origOpts) {
 				.appendTo('body');
 
 			$.each($.extend({ _wname : 1 }, origOpts.data), function(name, val) {
-				form.append($('<input/>').attr({ type  : 'hidden', name  : name, value : val }));
+				form.append($('<input/>').attr({ type : 'hidden', name : name, value : val }));
 			});
 
 			opts.files && opts.files.each(function() {
