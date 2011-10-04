@@ -14,14 +14,13 @@
 
 $.ajaxPrefilter(function(opts) {
 	if(opts.files && opts.files.length) {
-		opts.dataTypes = [];
-		return 'jsonw';
+		return 'wname';
 	}
 });
 
 var cnt = 1;
 
-$.ajaxTransport('jsonw', function(opts, origOpts) {
+$.ajaxTransport('wname', function(opts, origOpts) {
 	var iframe;
 	return {
 		send : function(_, completeCallback) {
@@ -46,18 +45,15 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 						iframe
 							.unbind()
 							.load(function() {
-								var status, statusText, resp;
 								if(frameWin.name != id) {
-									resp = $.parseJSON(frameWin.name);
-									status = 200;
-									statusText = 'OK';
+									var resp = frameWin.name;
+									iframe.remove();
+									completeCallback(200, 'OK', { wname : resp });
 								}
 								else {
-									status = 500;
-									statusText = 'INTERNAL ERROR';
+									iframe.remove();
+									completeCallback(500, 'INTERNAL_ERROR');
 								}
-								iframe.remove();
-								completeCallback(status, statusText, { jsonw : resp });
 							});
 
 						frameWin.location = 'about:blank';
@@ -65,7 +61,7 @@ $.ajaxTransport('jsonw', function(opts, origOpts) {
 				})
 				.appendTo('body');
 
-			$.each($.extend({ _jsonw : 1 }, origOpts.data), function(name, val) {
+			$.each($.extend({ _wname : 1 }, origOpts.data), function(name, val) {
 				form.append($('<input/>').attr({ type  : 'hidden', name  : name, value : val }));
 			});
 
