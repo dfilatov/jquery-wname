@@ -14,6 +14,7 @@
 
 $.ajaxPrefilter(function(opts) {
 	if(opts.files && opts.files.length) {
+		opts.type = 'POST';
 		return 'wname';
 	}
 });
