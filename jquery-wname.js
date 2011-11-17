@@ -1,6 +1,6 @@
 /**
  * window.name-based transport for jQuery.Ajax with crossdomain file's uploading support
- * @version 1.0.2
+ * @version 1.0.3
  * @requires jquery >= 1.5
  *
  * Copyright (c) 2011 Filatov Dmitry (dfilatov@yandex-team.ru)
