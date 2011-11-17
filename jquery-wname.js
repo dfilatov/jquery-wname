@@ -38,29 +38,28 @@ $.ajaxTransport('wname', function(opts, origOpts) {
 
 			iframe = $('<iframe name="' + id + '"/>')
 				.css('display', 'none')
+				.appendTo('body')
 				.load(function() {
-					if(iframe) { // we need to check this, because Chrome throw 'load' twice: first go after creating iframe, second after content loaded
-						var frameWin = iframe[0].contentWindow ||
-								(iframe[0].contentDocument && iframe[0].contentDocument.window);
+					var frameWin = iframe[0].contentWindow ||
+							(iframe[0].contentDocument && iframe[0].contentDocument.window);
 
-						iframe
-							.unbind()
-							.load(function() {
-								if(frameWin.name != id) {
-									var resp = frameWin.name;
-									iframe.remove();
-									completeCallback(200, 'OK', { wname : resp });
-								}
-								else {
-									iframe.remove();
-									completeCallback(500, 'INTERNAL_ERROR');
-								}
-							});
+					iframe
+						.unbind()
+						.load(function() {
+							if(frameWin.name != id) {
+								var resp = frameWin.name;
+								iframe.remove();
+								completeCallback(200, 'OK', { wname : resp });
+							}
+							else {
+								iframe.remove();
+								completeCallback(500, 'INTERNAL_ERROR');
+							}
+						});
 
-						frameWin.location = 'about:blank';
-					}
-				})
-				.appendTo('body');
+					frameWin.location = 'about:blank';
+				});
+
 
 			$.each($.extend({ _wname : 1 }, origOpts.data), function(name, val) {
 				form.append($('<input/>').attr({ type : 'hidden', name : name, value : val }));
