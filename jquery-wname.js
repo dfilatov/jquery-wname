@@ -1,6 +1,6 @@
 /**
  * window.name-based transport for jQuery.Ajax with crossdomain file's uploading support
- * @version 1.0.2
+ * @version 1.0.3
  * @requires jquery >= 1.5
  *
  * Copyright (c) 2011 Filatov Dmitry (dfilatov@yandex-team.ru)
@@ -14,6 +14,7 @@
 
 $.ajaxPrefilter(function(opts) {
 	if(opts.files && opts.files.length) {
+		opts.type = 'POST';
 		return 'wname';
 	}
 });
@@ -35,32 +36,6 @@ $.ajaxTransport('wname', function(opts, origOpts) {
 						encoding : 'multipart/form-data'
 					});
 
-			iframe = $('<iframe name="' + id + '"/>')
-				.css('display', 'none')
-				.load(function() {
-					if(iframe) { // we need to check this, because Chrome throw 'load' twice: first go after creating iframe, second after content loaded
-						var frameWin = iframe[0].contentWindow ||
-								(iframe[0].contentDocument && iframe[0].contentDocument.window);
-
-						iframe
-							.unbind()
-							.load(function() {
-								if(frameWin.name != id) {
-									var resp = frameWin.name;
-									iframe.remove();
-									completeCallback(200, 'OK', { wname : resp });
-								}
-								else {
-									iframe.remove();
-									completeCallback(500, 'INTERNAL_ERROR');
-								}
-							});
-
-						frameWin.location = 'about:blank';
-					}
-				})
-				.appendTo('body');
-
 			$.each($.extend({ _wname : 1 }, origOpts.data), function(name, val) {
 				form.append($('<input/>').attr({ type : 'hidden', name : name, value : val }));
 			});
@@ -70,10 +45,35 @@ $.ajaxTransport('wname', function(opts, origOpts) {
 				form.append(file.replaceWith(file.clone(true, true)));
 			});
 
+			iframe = $('<iframe name="' + id + '"/>')
+				.css('display', 'none')
+				.appendTo('body');
+
 			form
 				.appendTo('body')
 				.submit()
 				.remove();
+
+			iframe.load(function() {
+				var frameWin = iframe[0].contentWindow ||
+						(iframe[0].contentDocument && iframe[0].contentDocument.window);
+
+				iframe
+					.unbind()
+					.load(function() {
+						if(frameWin.name != id) {
+							var resp = frameWin.name;
+							iframe.remove();
+							completeCallback(200, 'OK', { wname : resp });
+						}
+						else {
+							iframe.remove();
+							completeCallback(500, 'INTERNAL_ERROR');
+						}
+					});
+
+				frameWin.location = 'about:blank';
+			});
 
 		},
 
